@@ -62,7 +62,7 @@ const Featured = () => {
         </div>
 
         {/* Image */}
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full max-w-sm md:max-w-md">
           <Image
             src="/p1.jpeg"
             alt="Featured Image"
