@@ -37,4 +37,28 @@ Just like:
       A newspaper’s side column
       YouTube’s recommended videos
       Medium’s “Most Popular” section
+
+
+Cheat Sheet: The "Short Note" to Remember
+If you want to center something perfectly in the middle of a container, copy this mental checklist:
+
+The Holy Trinity of Centering:
+
+flex: "Turn on" the flexbox engine.
+
+justify-center: Center it horizontally (Left/Right).
+
+items-center: Center it vertically (Top/Bottom).
+
+🔹 When should YOU use flex-1?
+
+✅ Side-by-side layouts
+✅ Image + text columns
+✅ Equal-width cards
+✅ Responsive sections
+
+🧠 Easy Memory Trick
+
+flex-1 = “share the space equally”
+
 */

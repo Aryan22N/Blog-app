@@ -1,3 +1,4 @@
+import Pagination from "../components/pagination/Pagination";
 import CardList from "../components/cardList/CardList";
 import CategoryList from "../components/categoryList/CategoryList";
 import Featured from "../components/featured/Featured";

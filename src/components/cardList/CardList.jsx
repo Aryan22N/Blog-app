@@ -18,6 +18,7 @@
 // export default CardList;
 import React from "react";
 import Card from "../card/Card";
+import Pagination from "../pagination/Pagination";
 
 const CardList = () => {
   return (
@@ -34,6 +35,8 @@ const CardList = () => {
         <Card />
         <Card />
       </div>
+
+      <Pagination />
     </section>
   );
 };

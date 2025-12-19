@@ -24,11 +24,14 @@ const Card = () => {
 
         {/* Content */}
         <div className="flex-1 flex flex-col gap-3">
-          <div className="flex">
-            <span className="text-sm text-gray-500 items-center justify-center">
-              11.02.2023 -
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-gray-500">11.02.2023</span>
+
+            <span className="text-gray-400">•</span>
+
+            <span className="uppercase text-red-500 font-semibold tracking-wide">
+              Culture
             </span>
-            <span className="text-sm text-red-500 pl-2"> CULTURE </span>
           </div>
 
           <h2 className="text-xl sm:text-2xl font-bold max-w-lg">
