@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
+import Tiptap from "@/components/editor/editor";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -38,6 +39,9 @@ const Page = () => {
             </button>
           </div>
         )}
+      </div>
+      <div className="mt-5 rounded-xl p-4 border bg-white shadow-sm">
+        <Tiptap />
       </div>
     </div>
   );
