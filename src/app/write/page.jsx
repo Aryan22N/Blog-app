@@ -8,7 +8,7 @@ const Page = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12 ">
       <input
         type="text"
         placeholder="Title"
@@ -43,6 +43,9 @@ const Page = () => {
       <div className="mt-5 rounded-xl p-4 border bg-white shadow-sm">
         <Tiptap />
       </div>
+      <button className="px-6 py-2 m-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
+        Publish
+      </button>
     </div>
   );
 };
