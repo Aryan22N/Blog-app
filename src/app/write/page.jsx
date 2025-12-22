@@ -1,11 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tiptap from "@/components/editor/editor";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
+  const { status } = useSession();
+  const router = useRouter();
+
+  //ye page vahi use kr sakta hai jo authenticated ho..
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return null;
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 ">
