@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+ 
 const CategorySchema = new mongoose.Schema({
   _id: {
     type: String,
