@@ -1729,4 +1729,502 @@ This pattern is used in almost every production React app.
 
 The loading state is used to show a loading indicator while the API request is in progress and to prevent rendering empty or incorrect UI before the data is available
 
+1️⃣ Using searchParams in page.js (Server Component)
+What you did
+
+In app/page.js, you read the page number from the URL:
+
+export default async function Home({ searchParams }) {
+  const page = Number(searchParams.page) || 1;
+
+  return <CardList page={page} />;
+}
+
+What this means
+
+?page=1, ?page=2 comes from the URL
+
+searchParams is provided by Next.js App Router
+
+You converted the page value to a number
+
+You passed it as a prop to CardList
+
+Why this is correct
+
+Server Component reads URL state
+
+Client Component receives clean data
+
+SEO-friendly pagination
+
+URL is the single source of truth
+
+2️⃣ Passing page as a prop to CardList
+<CardList page={page} />
+
+What you used
+
+Prop drilling
+
+Clean separation of concerns
+
+Why this matters
+
+CardList does NOT need to know about the URL
+
+It only cares about which page to show
+
+Makes the component reusable
+
+3️⃣ Fetching paginated data using useEffect
+
+Inside CardList:
+
+useEffect(() => {
+  fetch(`/api/news/recent?page=${page}`)
+    .then(...)
+}, [page]);
+
+What you used
+
+useEffect
+
+Dependency array [page]
+
+What happens
+
+Component renders
+
+page changes
+
+useEffect runs again
+
+New data is fetched
+
+State updates
+
+UI re-renders
+
+Why this is correct
+
+React way of handling side effects
+
+No unnecessary API calls
+
+Pagination is reactive
+
+4️⃣ Managing UI state with useState
+const [news, setNews] = useState([]);
+const [loading, setLoading] = useState(true);
+
+What you used
+
+useState for data
+
+useState for loading state
+
+Why this is important
+
+Prevents blank UI
+
+Allows loading indicators
+
+Makes UX smooth
+
+5️⃣ Rendering a list safely using keys
+news.map((item, index) => (
+  <Card
+    key={item._id ?? `${item.sourceUrl}-${item.publishedAt}-${index}`}
+    news={item}
+  />
+))
+
+What you used
+
+MongoDB _id (primary key)
+
+Fallback key (URL + timestamp + index)
+
+Why this matters
+
+React uses keys for reconciliation
+
+Prevents duplicate rendering
+
+Prevents UI bugs during pagination
+
+6️⃣ Passing data to <Card /> via props
+<Card news={item} />
+
+What you used
+
+Props
+
+Component composition
+
+Why this is correct
+
+Card is a pure presentational component
+
+Single responsibility principle
+
+Easy to test & reuse
+
+7️⃣ Using useRouter in Pagination
+const router = useRouter();
+
+What you used
+
+useRouter from next/navigation
+
+App Router navigation API
+
+Why this is important
+
+Client-side navigation
+
+No full page reload
+
+Faster UX
+
+8️⃣ Updating URL with router.push
+router.push(`/?page=${page + 1}`, { scroll: false });
+
+What you used
+
+router.push
+
+{ scroll: false }
+
+What happens
+
+URL updates
+
+Server re-renders page
+
+Client components update
+
+Scroll position is preserved
+
+Why this is advanced
+
+Most beginners forget { scroll: false }, causing:
+
+Jump to top
+
+Bad UX
+
+You handled it properly.
+
+9️⃣ Using useSearchParams in Pagination
+const searchParams = useSearchParams();
+const page = Number(searchParams.get("page")) || 1;
+
+What you used
+
+URL-based state
+
+Read-only query params
+
+Why this is correct
+
+Pagination is URL-driven
+
+Works with refresh
+
+Shareable links
+
+🔟 Implementing controlled scroll behavior
+What you wanted
+
+“Scroll to the Recent Posts heading, not top of page”
+
+What you used
+
+useRef
+
+useEffect
+
+scrollIntoView
+
+Step A: Create a ref
+const headingRef = useRef(null);
+
+Step B: Attach it to the heading
+<h1 ref={headingRef}>Recent Posts</h1>
+
+Step C: Scroll when page changes
+useEffect(() => {
+  headingRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+}, [page]);
+
+Why this is the BEST approach
+
+React-controlled
+
+No timeouts
+
+No DOM hacks
+
+Runs exactly when data changes
+
+6️⃣ When to use WHICH method (Cheat Sheet)
+Use case	Best method
+Scroll to section / heading	scrollIntoView()
+Scroll to top	window.scrollTo()
+Scroll inside a div	element.scrollTop
+Smooth UX without calculations	scrollIntoView()
+
+8️⃣ Interview-level explanation (memorize)
+
+scrollIntoView() is a DOM method that scrolls the nearest scrollable ancestor so that the element becomes visible inside the viewport. It supports smooth scrolling and alignment options like start, center, or end, making it ideal for component-based scrolling in React applications.
+
+2️⃣ What is ?? (Nullish Coalescing Operator)
+📌 Meaning
+A ?? B
+
+
+If A is NOT null or undefined → use A
+
+If A IS null or undefined → use B
+
+Example
+null ?? "hello"       // "hello"
+undefined ?? "hello"  // "hello"
+"" ?? "hello"         // "" (empty string is valid)
+0 ?? 10               // 0
+
+
+So in your case:
+
+item._id ?? fallbackKey
+
+
+If _id exists → use _id
+
+If _id missing → use fallback
+
+1️⃣ useRouter() — Changing the URL (Navigation)
+const router = useRouter();
+
+What it gives you
+
+useRouter() lets you programmatically navigate in a client component.
+
+Think of it as:
+
+“I want to change the URL from JavaScript.”
+
+2️⃣ useSearchParams() — Reading the URL
+const searchParams = useSearchParams();
+
+What it gives you
+
+Read-only access to query parameters
+
+Example URL:
+
+/?page=3
+
+What you get
+searchParams.get("page"); // "3"
+
+What you used it for
+const page = parseInt(searchParams.get("page")) || 1;
+
+Why this is needed
+
+You must know current page
+
+To disable Previous button on page 1
+
+To calculate next / previous page numbers
+
+📌 The code you asked about
+const { searchParams } = new URL(req.url);
+const page = parseInt(searchParams.get("page")) || 1;
+const limit = 4;
+const skip = (page - 1) * limit;
+
+1️⃣ WHY do we need to change the API route at all?
+Short answer:
+
+Because pagination is a backend responsibility, not frontend.
+
+The frontend only says:
+
+“I want page 2”
+
+
+The backend must decide:
+
+“Which 4 records belong to page 2?”
+
+2️⃣ What was happening BEFORE this change ❌
+
+Earlier, your API was doing something like:
+
+NewsCache.find().limit(6);
+
+Result:
+
+API always returned the same posts
+
+Page 1, page 2, page 3 → all looked identical
+
+Pagination UI changed
+
+❌ Data did NOT change
+
+So pagination was fake (only URL changed).
+
+3️⃣ What pagination REALLY means (concept)
+
+If you have news posts like this:
+
+Index	Article
+0	A
+1	B
+2	C
+3	D
+4	E
+5	F
+6	G
+7	H
+
+And you want 4 posts per page:
+
+Page	Posts
+1	A B C D
+2	E F G H
+3	next 4
+
+This slicing must happen in the backend.
+
+4️⃣ What each line does (line-by-line)
+🔹 1. Extract query params from request URL
+const { searchParams } = new URL(req.url);
+
+
+📌 This reads:
+
+/api/news/recent?page=2
+
+
+Now backend can access:
+
+searchParams.get("page") // "2"
+
+🔹 2. Convert page to a number
+const page = parseInt(searchParams.get("page")) || 1;
+
+
+Why?
+
+URL params are strings
+
+DB math needs numbers
+
+Default page = 1
+
+🔹 3. Decide how many items per page
+const limit = 4;
+
+
+Meaning:
+
+“Each page should show exactly 4 posts”
+
+🔹 4. Calculate how many items to skip
+const skip = (page - 1) * limit;
+
+
+This is the core of pagination.
+
+Page	Skip	Meaning
+1	0	Start from beginning
+2	4	Skip first 4
+3	8	Skip first 8
+5️⃣ How this is used in MongoDB
+NewsCache.find()
+  .sort({ publishedAt: -1 })
+  .skip(skip)
+  .limit(limit);
+
+
+📌 Meaning:
+
+“Ignore the first skip posts, then return only limit posts”
+
+6️⃣ What happens NOW (correct behavior ✅)
+
+/api/news/recent?page=1 → first 4 posts
+
+/api/news/recent?page=2 → next 4 posts
+
+/api/news/recent?page=3 → next 4 posts
+
+Frontend pagination finally works properly.
+
+7️⃣ Why frontend alone CANNOT do this ❌
+
+You might think:
+
+“Why not fetch everything and slice in frontend?”
+
+Problems:
+
+Huge data transfer
+
+Slow loading
+
+Bad SEO
+
+High memory usage
+
+Not scalable
+
+Backend pagination:
+
+Faster
+
+Secure
+
+Scalable
+
+Industry standard
+
+8️⃣ Interview-level explanation (memorize this)
+
+Pagination logic must live in the backend. The frontend only sends the page number, while the backend uses skip and limit to return the correct subset of data, improving performance, scalability, and correctness.
+
+9️⃣ One-line mental model
+
+Frontend asks for page → Backend decides which data belongs to that page
+
+🔚 Final Summary
+
+You changed the API route because:
+
+Pagination is meaningless without backend support
+
+page tells which chunk of data
+
+limit defines how many
+
+skip defines from where
+
+MongoDB handles slicing efficiently
+
+Without this change:
+❌ Pagination UI lies
+With this change:
+✅ Pagination is real and scalable
+
+
+
 */

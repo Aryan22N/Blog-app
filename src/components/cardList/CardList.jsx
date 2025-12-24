@@ -1,14 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Card from "../card/Card";
 import Pagination from "../pagination/Pagination";
 
-const CardList = () => {
+const CardList = ({ page }) => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // reference to the heading
+  const headingRef = useRef(null);
+
   useEffect(() => {
-    fetch("/api/news/recent")
+    fetch(`/api/news/recent?page=${page}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log("ARTICLES FROM API:", data.articles);
@@ -19,12 +22,24 @@ const CardList = () => {
         setNews([]);
         setLoading(false);
       });
-  }, []);
+  }, [page]);
+
+  //  scroll when page changes
+  useEffect(() => {
+    if (headingRef.current) {
+      headingRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [page]);
 
   return (
     <section className="flex-1 w-full">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold">Recent Posts</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold" ref={headingRef}>
+          Recent Posts
+        </h1>
       </div>
 
       <div className="flex flex-col gap-10">
@@ -32,8 +47,11 @@ const CardList = () => {
         {loading && <p>Loading latest news...</p>}
 
         {!loading &&
-          news.map((item) => (
-            <Card key={`${item.sourceUrl}-${item.publishedAt}`} news={item} /> //unique key
+          news.map((item, index) => (
+            <Card
+              key={item._id ?? `${item.sourceUrl}-${item.publishedAt}-${index}`}
+              news={item}
+            />
           ))}
       </div>
 

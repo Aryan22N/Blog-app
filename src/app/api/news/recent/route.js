@@ -1,15 +1,22 @@
 import connectMongoose from "@/lib/mongoose";
 import NewsCache from "@/models/newsCache.model";
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectMongoose();
+
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = 4;
+    const skip = (page - 1) * limit; //4,4 post ke baad repeat hoga means pahile 4 post dikhege then skip that 4 post then show next 4 post
 
     // Check cache
     const cachedNews = await NewsCache.find({})
       .sort({ publishedAt: -1 })
-      .limit(6)
+      .skip(skip)
+      .limit(limit)
       .lean();
+    //DB se saari news uthao → latest pehle rakho → page ke hisaab se pehle wali chhod do → sirf required number bhejo → plain JS objects bana do
 
     //jab cache empty na ho...
     if (cachedNews.length > 0) {
