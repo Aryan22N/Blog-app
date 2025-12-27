@@ -10,6 +10,8 @@ const CardList = ({ page }) => {
   // reference to the heading
   const headingRef = useRef(null);
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     fetch(`/api/news/recent?page=${page}`)
       .then((res) => res.json())
@@ -26,6 +28,10 @@ const CardList = ({ page }) => {
 
   //  scroll when page changes
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     if (headingRef.current) {
       headingRef.current.scrollIntoView({
         behavior: "smooth",

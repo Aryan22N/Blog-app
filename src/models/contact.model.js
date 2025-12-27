@@ -11,7 +11,6 @@ const ContactSchema = new mongoose.Schema(
 
 let Contact;
 
-// ✅ THIS PART FIXES THE ERROR
 if (mongoose.models.Contact) {
   Contact = mongoose.models.Contact;
 } else {
