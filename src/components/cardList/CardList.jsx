@@ -2,10 +2,12 @@
 import { useEffect, useState, useRef } from "react";
 import Card from "../card/Card";
 import Pagination from "../pagination/Pagination";
+import { Suspense } from "react";
 
-const CardList = ({ page }) => {
+const CardList = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   // reference to the heading
   const headingRef = useRef(null);
@@ -61,7 +63,9 @@ const CardList = ({ page }) => {
           ))}
       </div>
 
-      <Pagination />
+      <Suspense fallback={<div className="mt-8">Loading pagination...</div>}>
+        <Pagination />
+      </Suspense>
     </section>
   );
 };

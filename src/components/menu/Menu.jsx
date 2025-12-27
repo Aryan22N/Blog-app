@@ -20,11 +20,7 @@ const Menu = () => {
         <Link
           href="/"
           className="
-            flex items-start gap-4
-
-            p-2 rounded-xl
-            transition
-          "
+            flex items-start gap-4 p-2 rounded-xl transition"
         >
           {/* Content */}
           <div className="flex flex-col gap-1">
@@ -46,11 +42,7 @@ const Menu = () => {
         <Link
           href="/"
           className="
-            flex items-start gap-4
-
-            p-2 rounded-xl
-            transition
-          "
+            flex items-start gap-4 p-2 rounded-xl transition"
         >
           {/* Content */}
           <div className="flex flex-col gap-1">
