@@ -14,13 +14,14 @@ export async function POST(req) {
   }
 }
 
-// GET ALL CATEGORIES  ✅ ADD THIS
+// GET ALL CATEGORIES  ADD THIS
 export async function GET() {
   try {
     await connectMongoose();
-    const categories = await Category.find();
-    return Response.json(categories);
+    const categories = await Category.find().lean();
+    return NextResponse.json(categories, { status: 200 });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error(" GET /api/categories:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
