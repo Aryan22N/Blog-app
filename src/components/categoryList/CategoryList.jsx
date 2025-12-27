@@ -1,7 +1,7 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { error } from "console";
+import connectMongoose from "@/lib/mongoose";
+import Category from "@/models/category.model";
 
 const bgColors = [
   "bg-[#57c4ff31]",
@@ -12,14 +12,11 @@ const bgColors = [
   "bg-[#5e4fff31]",
 ];
 
+// SERVER-SIDE DATA FETCH (BEST PRACTICE)
 const getData = async () => {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/categories`);
-
-  if (!res.ok) {
-    throw new Error("failed");
-  }
-
-  return res.json();
+  await connectMongoose();
+  const categories = await Category.find().lean();
+  return categories;
 };
 
 const CategoryList = async () => {
@@ -27,41 +24,33 @@ const CategoryList = async () => {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-      {/* Heading */}
       <h1 className="text-2xl font-bold mb-6">Popular Categories</h1>
 
-      {/* Categories */}
       <div
-        className=" grid grid-cols-2 gap-4
-          sm:flex sm:flex-wrap
-          sm:gap-4
-          sm:justify-start
+        className="
+          grid grid-cols-2 gap-4
+          sm:flex sm:flex-wrap sm:gap-4 sm:justify-start
         "
       >
-        {/* Category Card */}
-        {data?.map((cat, index) => (
+        {data.map((cat, index) => (
           <Link
-            key={cat._id}
-            href="/"
+            key={cat._id.toString()}
+            href={`/category/${cat.slug}`}
             className={`
               ${bgColors[index % bgColors.length]}
               flex items-center gap-3 justify-center
-              px-5
-              h-20
-              w-full sm:w-[180px]
-              rounded-2xl
-              shadow-sm
-              hover:shadow-md
-              hover:scale-[1.03]
+              px-5 h-20 w-full sm:w-[180px]
+              rounded-2xl shadow-sm
+              hover:shadow-md hover:scale-[1.03]
               transition-all
             `}
           >
-            <div className="relative w-10 h-10 rounded-full items-center justify-center overflow-hidden">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden">
               <Image
                 src={cat.img}
-                alt={cat.slug}
+                alt={cat.title}
                 fill
-                className="object-cover "
+                className="object-cover"
               />
             </div>
             <span className="text-sm font-semibold">{cat.title}</span>
